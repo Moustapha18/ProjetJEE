@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example</groupId>
   <artifactId>jee-location-immeubles</artifactId>
@@ -11,38 +9,37 @@
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
-
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
-    <jstl.api.version>3.0.0</jstl.api.version>
-    <jstl.impl.version>3.0.1</jstl.impl.version>
     <hibernate.version>6.4.4.Final</hibernate.version>
     <jakarta.persistence.version>3.1.0</jakarta.persistence.version>
     <hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
-    <mysql.version>8.4.0</mysql.version>
+    <postgres.version>42.7.3</postgres.version>
     <junit.version>5.10.2</junit.version>
   </properties>
 
   <dependencies>
-    <!-- Servlet/JSP/JSTL -->
+    <!-- Servlet API fournie par Tomcat -->
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
       <version>${jakarta.servlet.version}</version>
       <scope>provided</scope>
     </dependency>
+
+    <!-- JSTL 3 (obligatoire côté appli ; ne pas mettre en provided) -->
     <dependency>
       <groupId>jakarta.servlet.jsp.jstl</groupId>
       <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-      <version>${jstl.api.version}</version>
+      <version>3.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish.web</groupId>
       <artifactId>jakarta.servlet.jsp.jstl</artifactId>
-      <version>${jstl.impl.version}</version>
+      <version>3.0.1</version>
     </dependency>
 
-    <!-- JPA/Hibernate + Validation -->
+    <!-- JPA / Hibernate / Validator -->
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
@@ -59,14 +56,21 @@
       <version>${hibernate.validator.version}</version>
     </dependency>
 
-    <!-- Driver DB (MySQL par défaut) -->
+    <!-- JDBC driver Postgres -->
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.7.1</version>
+      <version>${postgres.version}</version>
     </dependency>
 
-    <!-- Test -->
+    <!-- BCrypt -->
+    <dependency>
+      <groupId>org.mindrot</groupId>
+      <artifactId>jbcrypt</artifactId>
+      <version>0.4</version>
+    </dependency>
+
+    <!-- Tests -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
@@ -79,20 +83,21 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.11.0</version>
-        <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>3.4.0</version>
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
-          <warName>${project.artifactId}</warName>
+          <warSourceDirectory>src/main/webapp</warSourceDirectory>
+          <webResources>
+            <resource>
+              <directory>src/main/webapp</directory>
+              <targetPath>/</targetPath>
+              <filtering>false</filtering>
+              <includes>
+                <include>**/*</include>
+              </includes>
+            </resource>
+          </webResources>
         </configuration>
       </plugin>
     </plugins>

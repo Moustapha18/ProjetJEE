@@ -1,0 +1,14 @@
+package com.example.location.dao;
+
+import com.example.location.entity.Locataire;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface LocataireDao {
+    List<Locataire> findAll();
+    Optional<Locataire> findById(Long id);
+    Locataire save(Locataire l);
+    Locataire update(Long id, Locataire l);
+    void deleteById(Long id);
+}
