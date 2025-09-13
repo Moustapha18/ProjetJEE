@@ -6,6 +6,7 @@ import com.example.location.entity.Utilisateur;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
+import com.example.location.security.Role;
 
 public class UtilisateurDaoJpa implements UtilisateurDao {
 
@@ -14,6 +15,43 @@ public class UtilisateurDaoJpa implements UtilisateurDao {
 
         try { return Optional.ofNullable(em.find(Utilisateur.class, id)); }
         finally { em.close(); }
+    }
+
+    @Override
+    public Optional<Utilisateur> findByResetToken(String token) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            List<Utilisateur> list = em.createQuery(
+                            "select u from Utilisateur u where u.resetToken = :t", Utilisateur.class)
+                    .setParameter("t", token)
+                    .setMaxResults(1)
+                    .getResultList();
+            return list.isEmpty()? Optional.empty() : Optional.of(list.get(0));
+        } finally { em.close(); }
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            Long c = em.createQuery(
+                            "select count(u) from Utilisateur u where lower(u.username)=lower(:x)", Long.class)
+                    .setParameter("x", username)
+                    .getSingleResult();
+            return c > 0;
+        } finally { em.close(); }
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            Long c = em.createQuery(
+                            "select count(u) from Utilisateur u where lower(u.email)=lower(:x)", Long.class)
+                    .setParameter("x", email)
+                    .getSingleResult();
+            return c > 0;
+        } finally { em.close(); }
     }
 
     @Override public List<Utilisateur> findAll() {

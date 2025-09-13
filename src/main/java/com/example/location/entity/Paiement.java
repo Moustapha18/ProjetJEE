@@ -9,69 +9,55 @@ import java.time.LocalDateTime;
 @Table(name = "paiement")
 public class Paiement {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // contrat payé
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "contrat_id", nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "contrat_id")
     private Contrat contrat;
 
-    @Column(name = "date_paiement", nullable = false)
-    private LocalDate datePaiement;
-
-    @Column(name = "montant", precision = 12, scale = 2, nullable = false)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal montant;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "mode", length = 20, nullable = false)
-    private ModePaiement mode;
-
-    @Column(name = "reference", length = 80)
+    @Column(name = "reference")
     private String reference;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "statut", length = 20, nullable = false)
-    private StatutPaiement statut = StatutPaiement.PAYE;
+    @Column(name = "date_paiement")
+    private LocalDate datePaiement;   // null = pas encore payé
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "echeance", nullable = false)
+    private LocalDate echeance;
+
+    @Convert(converter = PaiementStatutConverter.class)
+    @Column(nullable = false)
+    private PaiementStatut statut = PaiementStatut.EN_ATTENTE;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @PrePersist
-    public void prePersist() {
+    protected void onCreate() {
         if (createdAt == null) createdAt = LocalDateTime.now();
-        if (statut == null) statut = StatutPaiement.PAYE;
+        if (datePaiement == null && statut == PaiementStatut.PAYE) {
+            datePaiement = LocalDate.now();
+        }
     }
 
-    public Paiement() {}
-
-    public Paiement(Long id, Contrat contrat, LocalDate datePaiement, BigDecimal montant,
-                    ModePaiement mode, String reference, StatutPaiement statut) {
-        this.id = id;
-        this.contrat = contrat;
-        this.datePaiement = datePaiement;
-        this.montant = montant;
-        this.mode = mode;
-        this.reference = reference;
-        this.statut = statut;
-    }
-
+    // Getters / Setters
     public Long getId() { return id; }
-    public Contrat getContrat() { return contrat; }
-    public LocalDate getDatePaiement() { return datePaiement; }
-    public BigDecimal getMontant() { return montant; }
-    public ModePaiement getMode() { return mode; }
-    public String getReference() { return reference; }
-    public StatutPaiement getStatut() { return statut; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-
     public void setId(Long id) { this.id = id; }
+    public Contrat getContrat() { return contrat; }
     public void setContrat(Contrat contrat) { this.contrat = contrat; }
-    public void setDatePaiement(LocalDate datePaiement) { this.datePaiement = datePaiement; }
+    public BigDecimal getMontant() { return montant; }
     public void setMontant(BigDecimal montant) { this.montant = montant; }
-    public void setMode(ModePaiement mode) { this.mode = mode; }
+    public String getReference() { return reference; }
     public void setReference(String reference) { this.reference = reference; }
-    public void setStatut(StatutPaiement statut) { this.statut = statut; }
+    public LocalDate getDatePaiement() { return datePaiement; }
+    public void setDatePaiement(LocalDate datePaiement) { this.datePaiement = datePaiement; }
+    public LocalDate getEcheance() { return echeance; }
+    public void setEcheance(LocalDate echeance) { this.echeance = echeance; }
+    public PaiementStatut getStatut() { return statut; }
+    public void setStatut(PaiementStatut statut) { this.statut = statut; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

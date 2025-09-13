@@ -4,12 +4,39 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
 
+  <context-param>
+    <param-name>mail.smtp.host</param-name>
+    <param-value>smtp.gmail.com</param-value>
+  </context-param>
+  <context-param>
+    <param-name>mail.smtp.port</param-name>
+    <param-value>587</param-value> <!-- 587 = STARTTLS ; 465 = SSL -->
+  </context-param>
+  <context-param>
+    <param-name>mail.smtp.username</param-name>
+    <param-value>ton.email@gmail.com</param-value>
+  </context-param>
+  <context-param>
+    <param-name>mail.smtp.password</param-name>
+    <param-value>TON_APP_PASSWORD</param-value>
+  </context-param>
+  <context-param>
+    <param-name>mail.smtp.from</param-name>
+    <param-value>no-reply@ton-domaine.com</param-value>
+  </context-param>
+  <context-param>
+    <param-name>mail.smtp.fromName</param-name>
+    <param-value>Location Immeubles</param-value>
+  </context-param>
+
+
   <display-name>jee-location-immeubles</display-name>
 
   <listener>
     <listener-class>com.example.location.config.BootstrapListener</listener-class>
   </listener>
 
+  <!-- Charset global -->
   <filter>
     <filter-name>CharsetFilter</filter-name>
     <filter-class>com.example.location.web.filters.CharsetFilter</filter-class>
@@ -19,16 +46,11 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-  <filter>
-    <filter-name>AuthFilter</filter-name>
-    <filter-class>com.example.location.security.AuthFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>AuthFilter</filter-name>
-    <url-pattern>/app/*</url-pattern>
-  </filter-mapping>
+  <!-- ❌ plus d'AuthFilter -->
 
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
 </web-app>
+
+

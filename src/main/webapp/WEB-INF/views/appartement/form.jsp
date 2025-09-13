@@ -1,88 +1,104 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>
-    <c:choose>
-      <c:when test="${mode eq 'edit'}">Modifier</c:when>
-      <c:otherwise>Créer</c:otherwise>
-    </c:choose>
-    un appartement
-  </title>
-  <style>.container{padding:14px}</style>
+  <meta charset="UTF-8">
+  <title>${pageTitle}</title>
+
+  <!-- Bootstrap & Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <style>
+    body { background-color: #f8f9fa; }
+    .form-card {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 6px 18px rgba(0,0,0,.08);
+      padding: 1.5rem;
+    }
+  </style>
 </head>
 <body>
 
-<%@ include file="/WEB-INF/views/_inc/navbar.jsp" %>
-
+<jsp:include page="/WEB-INF/views/_inc/navbar.jsp"/>
 
 <div class="container">
-  <h2>
-    <c:choose>
-      <c:when test="${mode eq 'edit'}">Modifier</c:when>
-      <c:otherwise>Créer</c:otherwise>
-    </c:choose>
-    un appartement
-  </h2>
+  <div class="form-card">
+    <h3 class="mb-3">
+      <i class="bi bi-building"></i>
+      ${formTitle}
+    </h3>
 
-  <c:if test="${not empty error}">
-    <div style="color:red">${error}</div>
-  </c:if>
+    ${errorMsg}
 
-  <form method="post" action="${pageContext.request.contextPath}/app/appartements">
-    <c:choose>
-      <c:when test="${mode eq 'edit' && not empty appartement}">
-        <input type="hidden" name="id" value="${appartement.id}" />
-        <input type="hidden" name="action" value="update" />
-      </c:when>
-      <c:otherwise>
-        <input type="hidden" name="action" value="create" />
-      </c:otherwise>
-    </c:choose>
+    <form method="post" action="${pageContext.request.contextPath}/app/appartements" class="needs-validation" novalidate>
 
-    <div>
-      <label>Numéro</label><br/>
-      <input type="text" name="numero" value="${empty appartement ? '' : appartement.numero}" required />
-    </div>
-    <br/>
+      ${hiddenFields}
 
-    <div>
-      <label>Étage</label><br/>
-      <input type="number" name="etage" value="${empty appartement ? '' : appartement.etage}" />
-    </div>
-    <br/>
+      <div class="mb-3">
+        <label class="form-label">Numéro</label>
+        <input type="text" class="form-control" name="numero" value="${numero}" required>
+      </div>
 
-    <div>
-      <label>Surface (m²)</label><br/>
-      <input type="number" step="0.01" name="surface" value="${empty appartement ? '' : appartement.surface}" />
-    </div>
-    <br/>
+      <div class="mb-3">
+        <label class="form-label">Étage</label>
+        <input type="number" class="form-control" name="etage" value="${etage}">
+      </div>
 
-    <div>
-      <label>Loyer</label><br/>
-      <input type="number" step="0.01" name="loyer" value="${empty appartement ? '' : appartement.loyer}" />
-    </div>
-    <br/>
+      <div class="mb-3">
+        <label class="form-label">Surface (m²)</label>
+        <input type="number" step="0.01" class="form-control" name="surface" value="${surface}">
+      </div>
 
-    <div>
-      <label>Immeuble</label><br/>
-      <select name="immeubleId" required>
-        <option value="">-- choisir --</option>
-        <c:forEach items="${immeubles}" var="im">
-          <option value="${im.id}"
-            <c:if test="${not empty appartement && appartement.immeuble.id == im.id}">selected</c:if>>
-            ${im.nom} - ${im.adresse}
-          </option>
-        </c:forEach>
-      </select>
-    </div>
-    <br/>
+      <div class="mb-3">
+        <label class="form-label">Nombre de pièces</label>
+        <input type="number" min="1" class="form-control" name="nbPieces" value="${nbPieces}" required>
+      </div>
 
-    <button type="submit">Enregistrer</button>
-    <a href="${pageContext.request.contextPath}/app/appartements">Annuler</a>
-  </form>
+      <div class="mb-3">
+        <label class="form-label">Loyer (FCFA)</label>
+        <input type="number" step="0.01" class="form-control" name="loyer" value="${loyer}">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Immeuble</label>
+        <select class="form-select" name="immeubleId" required>
+          <option value="">-- choisir --</option>
+          ${optionsImmeubles}
+        </select>
+      </div>
+
+      <div class="d-flex gap-3">
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-check-circle"></i> Enregistrer
+        </button>
+        <a href="${pageContext.request.contextPath}/app/appartements" class="btn btn-outline-secondary">
+          <i class="bi bi-x-circle"></i> Annuler
+        </a>
+      </div>
+    </form>
+  </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  (() => {
+    'use strict'
+    const forms = document.querySelectorAll('.needs-validation')
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+        form.classList.add('was-validated')
+      }, false)
+    })
+  })()
+</script>
+
 </body>
 </html>

@@ -1,227 +1,195 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Accueil</title>
+  <meta charset="UTF-8">
+  <title>Tableau de bord</title>
+
+  <!-- Bootstrap & Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
   <style>
- /* Carte du graphique + limites responsives  */
- .chart-section{
-   max-width: 960px;
-   margin: 12px auto;
-   padding: 12px;
-   border: 1px solid #e5e7eb;
-   border-radius: 10px;
- }
+    body {
+      background: #f4f6f9;
+    }
+    h2, h3 {
+      font-weight: 600;
+    }
+    .card-kpi {
+      border: none;
+      border-radius: 1rem;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      color: #fff;
+    }
+    .card-kpi .h3 {
+      font-weight: bold;
+    }
+    .kpi-blue { background: linear-gradient(135deg,#0d6efd,#458ff9); }
+    .kpi-green { background: linear-gradient(135deg,#198754,#42ba96); }
+    .kpi-orange { background: linear-gradient(135deg,#fd7e14,#f9a23c); }
+    .kpi-purple { background: linear-gradient(135deg,#6f42c1,#9b6ef3); }
+    .kpi-pink { background: linear-gradient(135deg,#d63384,#f06595); }
+    .kpi-teal { background: linear-gradient(135deg,#20c997,#63e6be); }
 
- /* Boîte qui fixe la hauteur du graphe :
-    - min 220px (lisible)
-    - 45vh (<= 45% de la hauteur écran)
-    - max 600px (ne dépassera pas ~20 cm sur la plupart des écrans) */
- .chart-box{
-   height: clamp(220px, 45vh, 600px);
- }
-
- /* Le canvas remplit sa boîte */
- .chart-box canvas{
-   width: 100% !important;
-   height: 100% !important;
-   display: block;
- }
-
-
-    .container{padding:16px}
-    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:16px 0}
-    .card{border:1px solid #e5e7eb;border-radius:10px;padding:14px}
-    .muted{color:#6b7280;font-size:14px}
-    .big{font-size:24px;font-weight:700}
-    .row{display:flex;gap:8px;align-items:center}
-    table { border-collapse: collapse }
-    th, td { border:1px solid #ddd; padding:6px 10px }
+    .chart-box {
+      height: clamp(220px, 45vh, 600px);
+    }
+    .table thead {
+      background-color: #e9ecef;
+    }
+    .badge-paid {
+      background-color: #d1e7dd;
+      color: #0f5132;
+      font-size: 0.8rem;
+      border-radius: 0.5rem;
+    }
+    .badge-warning {
+      background-color: #fff3cd;
+      color: #664d03;
+    }
+    .badge-danger {
+      background-color: #f8d7da;
+      color: #842029;
+    }
   </style>
 </head>
 <body>
+
 <jsp:include page="/WEB-INF/views/_inc/navbar.jsp"/>
 
-<div class="container">
-  <h2>Tableau de bord</h2>
-  <div class="muted">Période : ${periodeMois}</div>
+<div class="container my-4">
 
-  <div class="cards">
-    <div class="card">
-      <div class="muted">Immeubles</div>
-      <div class="big">${nbImmeubles}</div>
+  <!-- En-tête -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <h2 class="mb-2">📊 Tableau de bord</h2>
+    <span class="text-muted">Période : ${periodeMois}</span>
+  </div>
+
+  <!-- KPIs avec couleurs -->
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-sm-6 col-lg-4">
+      <div class="card card-kpi kpi-blue p-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div>Immeubles</div>
+            <div class="h3 m-0">${nbImmeubles}</div>
+          </div>
+          <i class="bi bi-buildings fs-1"></i>
+        </div>
+      </div>
     </div>
-    <div class="card">
-      <div class="muted">Appartements (total)</div>
-      <div class="big">${nbAppartements}</div>
-      <div class="muted">Occupés : ${nbAppartsOccupes} &nbsp;|&nbsp; Libres : ${nbAppartsLibres}</div>
+
+    <div class="col-12 col-sm-6 col-lg-4">
+      <div class="card card-kpi kpi-green p-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div>Appartements</div>
+            <div class="h3 m-0">${nbAppartements}</div>
+            <small>Occupés : ${nbAppartsOccupes} | Libres : ${nbAppartsLibres}</small>
+          </div>
+          <i class="bi bi-door-open fs-1"></i>
+        </div>
+      </div>
     </div>
-    <div class="card">
-      <div class="muted">Locataires</div>
-      <div class="big">${nbLocataires}</div>
+
+    <div class="col-12 col-sm-6 col-lg-4">
+      <div class="card card-kpi kpi-orange p-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div>Locataires</div>
+            <div class="h3 m-0">${nbLocataires}</div>
+          </div>
+          <i class="bi bi-people fs-1"></i>
+        </div>
+      </div>
     </div>
-    <div class="card">
-      <div class="muted">Contrats actifs</div>
-      <div class="big">${nbContratsActifs}</div>
+
+    <div class="col-12 col-sm-6 col-lg-4">
+      <div class="card card-kpi kpi-purple p-3">
+        <div>Contrats actifs</div>
+        <div class="h3 m-0">${nbContratsActifs}</div>
+      </div>
     </div>
-    <div class="card">
-      <div class="muted">Loyer mensuel théorique (contrats actifs)</div>
-      <div class="big"><c:out value="${loyerMensuelTotal}"/> FCFA</div>
+
+    <div class="col-12 col-sm-6 col-lg-4">
+      <div class="card card-kpi kpi-pink p-3">
+        <div>Loyer mensuel théorique</div>
+        <div class="h3 m-0">${loyerMensuelTotal} FCFA</div>
+      </div>
     </div>
-    <div class="card">
-      <div class="muted">Paiements encaissés (${periodeMois})</div>
-      <div class="big"><c:out value="${paiementsMois}"/> FCFA</div>
+
+    <div class="col-12 col-sm-6 col-lg-4">
+      <div class="card card-kpi kpi-teal p-3">
+        <div>Paiements encaissés (${periodeMois})</div>
+        <div class="h3 m-0">${paiementsMois} FCFA</div>
+      </div>
     </div>
   </div>
 
-  <hr/>
-  <h3>Contrats qui expirent sous 30 jours</h3>
-  <c:choose>
-    <c:when test="${empty contratsQuiExpirent}">
-      <p>Aucun contrat n’expire dans les 30 prochains jours.</p>
-    </c:when>
-    <c:otherwise>
-      <table>
+  <!-- Contrats qui expirent -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header fw-semibold bg-light"><i class="bi bi-hourglass-split"></i> Contrats qui expirent</div>
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
         <thead>
-          <tr>
-            <th>ID</th>
-            <th>Appartement</th>
-            <th>Locataire</th>
-            <th>Date fin</th>
-            <th>Loyer (FCFA)</th>
-            <th>Action</th>
-          </tr>
+          <tr><th>ID</th><th>Appartement</th><th>Locataire</th><th>Date fin</th><th>Loyer</th><th></th></tr>
         </thead>
-        <tbody>
-        <c:forEach items="${contratsQuiExpirent}" var="c">
-          <tr>
-            <td>${c.id}</td>
-            <td>${c.appartement.numero} (${c.appartement.immeuble.nom})</td>
-            <td><c:out value="${c.locataire.nomComplet}"/></td>
-            <td>${c.dateFin}</td>
-            <td>${c.loyerMensuel}</td>
-            <td>
-              <a href="${pageContext.request.contextPath}/app/contrats?action=edit&id=${c.id}">
-                Gérer
-              </a>
-            </td>
-          </tr>
-        </c:forEach>
-        </tbody>
+        <tbody>${tableContratsExpirent}</tbody>
       </table>
-    </c:otherwise>
-  </c:choose>
-
-  <hr/>
-  <h3>Contrats actifs sans paiement ce mois</h3>
-  <c:choose>
-    <c:when test="${empty contratsEnRetard}">
-      <p>🎉 Aucun retard de paiement pour ${periodeMois}.</p>
-    </c:when>
-    <c:otherwise>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Appartement</th>
-            <th>Locataire</th>
-            <th>Loyer (FCFA)</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-        <c:forEach items="${contratsEnRetard}" var="c">
-          <tr>
-            <td>${c.id}</td>
-            <td>${c.appartement.numero} (${c.appartement.immeuble.nom})</td>
-             <td><c:out value="${c.locataire.nomComplet}"/></td>
-            <td>${c.loyerMensuel}</td>
-            <td>
-              <a href="${pageContext.request.contextPath}/app/paiements?action=new&contratId=${c.id}">
-                Enregistrer un paiement
-              </a>
-            </td>
-          </tr>
-        </c:forEach>
-        </tbody>
-      </table>
-    </c:otherwise>
-  </c:choose>
-
-  <hr/>
-  <hr/>
-  <h3>Paiements encaissés — 6 derniers mois</h3>
-
-  <div class="chart-section">
-    <div class="chart-box">
-      <canvas id="chart6mois"></canvas>
     </div>
   </div>
 
-
-  <!-- On dépose le JSON (ou [] par défaut) dans des balises dédiées -->
-  <c:set var="labelsJson" value="${empty chartLabels ? '[]' : chartLabels}"/>
-  <c:set var="dataJson"   value="${empty chartData   ? '[]' : chartData}"/>
-
-  <script type="application/json" id="labelsJson"><c:out value="${labelsJson}" escapeXml="false"/></script>
-  <script type="application/json" id="dataJson"><c:out value="${dataJson}" escapeXml="false"/></script>
-
-  <!-- Chart.js -->
-  <script type="application/json" id="labelsJson"><c:out value="${empty chartLabels ? '[]' : chartLabels}" escapeXml="false"/></script>
-  <script type="application/json" id="dataJson"><c:out value="${empty chartData ? '[]' : chartData}" escapeXml="false"/></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script>
-    function safeParseJson(elId, fallback) {
-      try {
-        const el = document.getElementById(elId);
-        const txt = (el && el.textContent || '').trim();
-        return txt ? JSON.parse(txt) : fallback;
-      } catch (e) { console.error("JSON invalide pour", elId, e); return fallback; }
-    }
-
-    const labels = safeParseJson('labelsJson', []);
-    const data   = (safeParseJson('dataJson', []) || []).map(v => (v == null ? 0 : +v));
-
-    const ctx = document.getElementById('chart6mois');
-    if (ctx) {
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [{
-            label: 'Paiements (FCFA)',
-            data,
-            borderWidth: 1,
-            backgroundColor: 'rgba(54, 162, 235, 0.35)',
-            borderColor: 'rgba(54, 162, 235, 1)'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false, // indispensable pour respecter la hauteur CSS
-          scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
-          plugins: { legend: { display: true, position: 'top' }, tooltip: { enabled: true } }
-        }
-      });
-    } else {
-      console.error("Canvas introuvable");
-    }
-  </script>
-
-  <div class="row" style="margin-top:12px">
-    <a href="${pageContext.request.contextPath}/app/immeubles">→ Gérer les immeubles</a>
-    <span class="muted">|</span>
-    <a href="${pageContext.request.contextPath}/app/appartements">→ Gérer les appartements</a>
-    <span class="muted">|</span>
-    <a href="${pageContext.request.contextPath}/app/locataires">→ Gérer les locataires</a>
-    <span class="muted">|</span>
-    <a href="${pageContext.request.contextPath}/app/contrats">→ Gérer les contrats</a>
-    <span class="muted">|</span>
-    <a href="${pageContext.request.contextPath}/app/paiements">→ Gérer les paiements</a>
+  <!-- Retards -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header fw-semibold bg-light"><i class="bi bi-exclamation-triangle"></i> Retards de paiement</div>
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr><th>ID</th><th>Appartement</th><th>Locataire</th><th>Loyer</th><th></th></tr>
+        </thead>
+        <tbody>${tableContratsRetard}</tbody>
+      </table>
+    </div>
   </div>
+
+  <!-- Graphique -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-light fw-semibold"><i class="bi bi-bar-chart"></i> Évolution des paiements</div>
+    <div class="card-body">
+      <div class="chart-box">
+        <canvas id="chart6mois"></canvas>
+      </div>
+    </div>
+  </div>
+
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  const labels = ${chartLabels != null ? chartLabels : "[]"};
+  const data   = ${chartData != null ? chartData : "[]"};
+
+  new Chart(document.getElementById('chart6mois'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Paiements (FCFA)',
+        data,
+        backgroundColor: 'rgba(13,110,253,0.6)',
+        borderColor: 'rgba(13,110,253,1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+
 </body>
 </html>

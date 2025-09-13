@@ -27,6 +27,20 @@ public class ImmeubleDaoJpa implements ImmeubleDao {
         finally { em.close(); }
     }
 
+    @Override
+    public List<Immeuble> findByProprietaireId(Long userId) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            return em.createQuery("""
+            select i from Immeuble i
+            where i.proprietaire.id = :uid
+            order by i.id desc
+        """, Immeuble.class)
+                    .setParameter("uid", userId)
+                    .getResultList();
+        } finally { em.close(); }
+    }
+
     @Override public Immeuble save(Immeuble i) {
         EntityManager em = JpaUtil.getEntityManager();
 

@@ -1,58 +1,105 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Appartements</title>
+
+
+  <!-- Bootstrap & Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
   <style>
-    .container{padding:14px}
-    table { border-collapse: collapse }
-    th, td { border: 1px solid #ddd; padding: 6px 10px }
+    body { background-color: #f8f9fa; }
+    .badge-dispo {
+      background-color: #d1e7dd;
+      color: #0f5132;
+      font-weight: 500;
+      font-size: .85rem;
+    }
+    .badge-occupe {
+      background-color: #f8d7da;
+      color: #842029;
+      font-weight: 500;
+      font-size: .85rem;
+    }
+    .filter-card {
+      border-radius: .75rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,.05);
+    }
+    .table thead {
+      background-color: #e9ecef;
+    }
   </style>
 </head>
 <body>
 
-<%@ include file="/WEB-INF/views/_inc/navbar.jsp" %>
+<jsp:include page="/WEB-INF/views/_inc/navbar.jsp"/>
+
+<div class="container my-4">
+  <h2 class="mb-3"><i class="bi bi-door-open"></i> Liste des appartements</h2>
+
+  <!-- Bouton création pour admin / propriétaire -->
+  ${btnNouveauAppartement}
 
 
-<div class="container">
-  <h2>Liste des appartements</h2>
+  <!-- Filtres -->
+  <div class="card filter-card mb-4">
+    <div class="card-body">
+      <form class="row g-3 align-items-end" method="get" action="${pageContext.request.contextPath}/app/appartements">
+        <div class="col-6 col-md-3">
+          <label class="form-label">Prix min</label>
+          <input type="number" step="0.01" class="form-control" name="min" value="${param.min}">
+        </div>
+        <div class="col-6 col-md-3">
+          <label class="form-label">Prix max</label>
+          <input type="number" step="0.01" class="form-control" name="max" value="${param.max}">
+        </div>
+        <div class="col-6 col-md-3">
+          <label class="form-label">Ville</label>
+          <input type="text" class="form-control" name="ville" value="${param.ville}">
+        </div>
+        <div class="col-6 col-md-3">
+          <label class="form-label">Pièces</label>
+          <input type="number" min="1" class="form-control" name="pieces" value="${param.pieces}">
+        </div>
+        <div class="col-12 d-flex justify-content-start gap-2">
+          <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Rechercher</button>
+          <a href="${pageContext.request.contextPath}/app/appartements" class="btn btn-outline-secondary">Réinitialiser</a>
+        </div>
+      </form>
+    </div>
+  </div>
 
-  <p><a href="${pageContext.request.contextPath}/app/appartements?action=new">➕ Nouvel appartement</a></p>
-
-  <c:choose>
-    <c:when test="${empty appartements}">
-      <p>Aucun appartement pour le moment.</p>
-    </c:when>
-    <c:otherwise>
-      <table>
+  <!-- Table des appartements -->
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <table class="table table-hover align-middle mb-0">
         <thead>
-        <tr>
-          <th>ID</th><th>Numéro</th><th>Étage</th><th>Surface (m²)</th><th>Loyer</th><th>Immeuble</th><th>Actions</th>
-        </tr>
+          <tr>
+            <th>ID</th>
+            <th>Numéro</th>
+            <th>Étage</th>
+            <th>Surface (m²)</th>
+            <th>Pièces</th>
+            <th>Loyer</th>
+            <th>Immeuble</th>
+            <th>Ville</th>
+            <th>Disponibilité</th>
+            <th class="text-end">Actions</th>
+          </tr>
         </thead>
         <tbody>
-        <c:forEach items="${appartements}" var="a">
-          <tr>
-            <td>${a.id}</td>
-            <td>${a.numero}</td>
-            <td><c:out value="${a.etage}"/></td>
-            <td><c:out value="${a.surface}"/></td>
-            <td><c:out value="${a.loyer}"/></td>
-            <td>${a.immeuble.nom}</td>
-            <td>
-              <a href="${pageContext.request.contextPath}/app/appartements?action=edit&id=${a.id}">✏️ Modifier</a>
-              &nbsp;|&nbsp;
-              <a href="${pageContext.request.contextPath}/app/appartements?action=delete&id=${a.id}"
-                 onclick="return confirm('Supprimer cet appartement ?');">🗑️ Supprimer</a>
-            </td>
-          </tr>
-        </c:forEach>
+          ${tableAppartements}
         </tbody>
       </table>
-    </c:otherwise>
-  </c:choose>
+    </div>
+  </div>
 </div>
+
+<!-- JS Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

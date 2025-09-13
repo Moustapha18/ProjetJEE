@@ -1,16 +1,20 @@
 package com.example.location.service;
 
 import com.example.location.entity.Contrat;
-import com.example.location.entity.StatutContrat;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Optional;
 
 public interface ContratService {
-    Contrat save(Contrat c);
-    Contrat update(Long id, Contrat data);
-    void deleteById(Long id);
     Optional<Contrat> findById(Long id);
-    List<Contrat> findAll();
-    List<Contrat> findByStatut(StatutContrat statut);
+
+    // Résilier un contrat : fixe la dateFin et passe le statut à résilié/inactif
+    Contrat terminate(Long contratId, LocalDate endDate);
+
+    // Renouveler (ou réactiver) : remet en ACTIF, peut ajuster le loyer et (re)définir dateDebut
+    Contrat renew(Long contratId, LocalDate newStartDate, BigDecimal newLoyer);
+
+    // Génère l’échéancier mensuel (paiements EN_ATTENTE) sur une période
+    void ensureSchedule(Long contratId, LocalDate startInclusive, LocalDate endInclusive);
 }

@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example</groupId>
   <artifactId>jee-location-immeubles</artifactId>
@@ -14,12 +15,12 @@
     <hibernate.version>6.4.4.Final</hibernate.version>
     <jakarta.persistence.version>3.1.0</jakarta.persistence.version>
     <hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
-    <postgres.version>42.7.3</postgres.version>
+    <postgres.version>42.7.4</postgres.version>
     <junit.version>5.10.2</junit.version>
   </properties>
 
   <dependencies>
-    <!-- Servlet API fournie par Tomcat -->
+    <!-- Servlet API (fourni par Tomcat) -->
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
@@ -27,7 +28,7 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- JSTL 3 (obligatoire côté appli ; ne pas mettre en provided) -->
+    <!-- JSTL 3 -->
     <dependency>
       <groupId>jakarta.servlet.jsp.jstl</groupId>
       <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
@@ -69,6 +70,22 @@
       <artifactId>jbcrypt</artifactId>
       <version>0.4</version>
     </dependency>
+    <!-- API + impl Jakarta Mail 2.0.x -->
+    <dependency>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>jakarta.mail</artifactId>
+      <version>2.0.1</version> <!-- ✔ version existante sur Central -->
+    </dependency>
+
+
+    <!-- (Facultatif, utile pour pièces jointes / DataHandler) -->
+    <dependency>
+      <groupId>com.sun.activation</groupId>
+      <artifactId>jakarta.activation</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+
+
 
     <!-- Tests -->
     <dependency>
@@ -80,6 +97,8 @@
   </dependencies>
 
   <build>
+    <!-- fige le nom du WAR => context-path = /jee-location-immeubles -->
+    <finalName>jee-location-immeubles</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -88,16 +107,6 @@
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
           <warSourceDirectory>src/main/webapp</warSourceDirectory>
-          <webResources>
-            <resource>
-              <directory>src/main/webapp</directory>
-              <targetPath>/</targetPath>
-              <filtering>false</filtering>
-              <includes>
-                <include>**/*</include>
-              </includes>
-            </resource>
-          </webResources>
         </configuration>
       </plugin>
     </plugins>

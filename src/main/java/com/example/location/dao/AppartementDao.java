@@ -2,6 +2,7 @@ package com.example.location.dao;
 
 import com.example.location.entity.Appartement;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,4 +13,6 @@ public interface AppartementDao {
     Optional<Appartement> findById(Long id);
     List<Appartement> findAll();
     List<Appartement> findByImmeubleId(Long immeubleId);
+
+    List<Appartement> searchFiltered(BigDecimal min, BigDecimal max, String ville, Integer nbPieces);
 }
